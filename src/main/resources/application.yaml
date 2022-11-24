@@ -1,0 +1,54 @@
+server:
+  port: 9090
+
+spring:
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins:
+              - "http://localhost:4200"
+            allowed-headers:
+              - "*"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+        add-to-simple-url-handler-mapping:
+      routes:
+        - id: IMAGE
+          uri: lb://IMAGE
+          predicates:
+            - Path=/images/**
+        - id: IAM
+          uri: lb://IAM
+          predicates:
+            - Path=/iam/**
+        - id: SOCIAL
+          uri: lb://social
+          predicates:
+            - Path=/social/**
+        - id: POSTS
+          uri: lb://posts
+          predicates:
+            - Path=/posts/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    instance:
+      hostname: localhost
+
+jwt:
+  secret: MinhCuong
